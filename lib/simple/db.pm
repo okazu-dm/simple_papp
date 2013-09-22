@@ -3,7 +3,7 @@ use Teng::Schema::Loader;
 
 sub teng{	
 	my $self = shift;
-	my $dbname = "simple_app";
+	my $dbname = "kossy";
 	my $user = "kossy";
 	my $passwd = "kossy";
 	my $dbh = DBI->connect("dbi:mysql:$dbname:localhost", $user, $passwd, {

@@ -1,6 +1,6 @@
 : cascade base
 : around content -> {
 <h1><: $greeting :> <: $c.stash.site_name :></h1>
-<p>Please </p>
+<p>Please input your message from <a href="form">this page</a>.</p>
 : }
 

@@ -4,7 +4,7 @@
 <legend>Message Form</legend>
 <form action="post" method="post" id="msgForm">
 	<label for="msg">Input your message</label>
-	<input type="text" id="msg" placeholder="Some message"/>
+	<input type="text" name="msg" id="msg" placeholder="Some message"/>
 	<input type="submit" />
 </form>
 : }

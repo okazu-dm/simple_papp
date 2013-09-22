@@ -13,7 +13,7 @@ filter 'set_title' => sub {
     my $app = shift;
     sub {
         my ( $self, $c )  = @_;
-        $c->stash->{site_name} = __PACKAGE__;
+        $c->stash->{site_name} = "Kossy training";
         $app->($self,$c);
     }
 };
@@ -21,7 +21,7 @@ filter 'set_title' => sub {
 
 get '/' => [qw/set_title/] => sub {
     my ( $self, $c )  = @_;
-    $c->render('index.tx', { greeting => "Hello", class_home => "active"});
+    $c->render('index.tx', {class_home => "active"});
 };
 
 get '/form' => [qw/set_title/] => sub {
@@ -29,9 +29,23 @@ get '/form' => [qw/set_title/] => sub {
     $c->render('form.tx', {class_post => "active"});
 };
 
-post '/post' => sub {
+post '/post' => [qw/set_title/] => sub {
     my ( $self, $c )  = @_;
-    $c->render('post.tx', {class_post => "active"});
+	my $result = $c->req->validator([
+		'msg' => {
+			rule => [['NOT_NULL', 'Input some message.']]
+		}
+	]);
+	if( $result->has_error ){
+		return $c->render('form.tx', 
+			{class_post => "active", info => $result->errors->{msg}});
+	}
+	my $teng = teng();
+	my $msg = $result->valid->get('msg');
+	my $row = $teng->insert('post' => {
+		body => $msg
+	});
+    $c->render('index.tx', {class_home => "active", info => "You have posted: " . $msg });
 };
 
 get '/json' => sub {
