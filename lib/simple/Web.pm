@@ -6,6 +6,7 @@ use utf8;
 use Kossy;
 use DBI;
 use Data::Dumper;
+use lib 'lib/simple';
 use db;
 
 filter 'set_title' => sub {
@@ -17,14 +18,20 @@ filter 'set_title' => sub {
     }
 };
 
+
 get '/' => [qw/set_title/] => sub {
     my ( $self, $c )  = @_;
-    $c->render('index.tx', { greeting => "Hello" });
+    $c->render('index.tx', { greeting => "Hello", class_home => "active"});
 };
 
-get '/input' => [qw/set_title/] => sub {
+get '/form' => [qw/set_title/] => sub {
     my ( $self, $c )  = @_;
-    $c->render('index.tx', { greeting => "Hello" });
+    $c->render('form.tx', {class_post => "active"});
+};
+
+post '/post' => sub {
+    my ( $self, $c )  = @_;
+    $c->render('post.tx', {class_post => "active"});
 };
 
 get '/json' => sub {

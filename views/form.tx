@@ -1,0 +1,11 @@
+: cascade base
+: around content -> {
+<h1><: $c.stash.site_name :></h1>
+<legend>Message Form</legend>
+<form action="post" method="post" id="msgForm">
+	<label for="msg">Input your message</label>
+	<input type="text" id="msg" placeholder="Some message"/>
+	<input type="submit" />
+</form>
+: }
+

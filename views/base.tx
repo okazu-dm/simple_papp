@@ -25,9 +25,8 @@ body {
 <a class="brand" href="<: $c.req.uri_for('/') :>">simple</a>
 <div class="nav-collapse">
 <ul class="nav">
-<li class="active"><a href="<: $c.req.uri_for('/') :>">Home</a></li>
-<li><a href="#about">About</a></li>
-<li><a href="#contact">Contact</a></li>
+<li class="<: $class_home :>"><a href="<: $c.req.uri_for('/') :>">Home</a></li>
+<li class="<: $class_post :>"><a href="form">Post</a></li>
 </ul>
 </div> <!--/.nav-collapse -->
 </div>
