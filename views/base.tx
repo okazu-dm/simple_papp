@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap.min.css') :>">
 <style>
 body {
-  padding-top: 60px;
+	padding-top: 60px;
 }
 </style>
 <link rel="stylesheet" href="<: $c.req.uri_for('/css/bootstrap-responsive.min.css') :>">
@@ -34,7 +34,12 @@ body {
 </div>
 
 <div class="container">
-<h1><: $info :></h1>
+
+: if $info {
+<div class="alert">
+	<: $info :>
+</div>
+: }
 : block content -> { }
 
 </div> <!-- /container -->
