@@ -11,7 +11,8 @@ sub init{
 			comment TEXT default NULL,
 			created_at TIMESTAMP default current_timestamp,
 			updated_at TIMESTAMP,
-			parent_id INT default NULL
+			parent_id INT default NULL,
+			deadline TIMESTAMP
 		)
 	});
 }
