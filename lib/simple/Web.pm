@@ -22,10 +22,8 @@ filter 'set_title' => sub {
 get '/' => [qw/set_title/] => sub {
     my ( $self, $c )  = @_;
     my $teng = teng();
-    my $name = $result->valid->get('name');
-    
-    
-    $c->render('index.tx', {class_home => "active"});
+    my $itr = $teng->search('todos');
+    $c->render('index.tx', {class_home => "active", itr => $itr});
 };
 
 get '/form' => [qw/set_title/] => sub {
@@ -49,23 +47,57 @@ post '/create' => [qw/set_title/] => sub {
 	my $comment = $result->valid->get('comment');
 	my $row = $teng->insert('todos' => {
 		name => $name,
-        cooment => $comment
+        comment => $comment
 	});
-    $c->render('index.tx', {class_home => "active", info => "You have posted: " . $msg });
+    $c->render('index.tx', {class_home => "active", info => "You have posted: " . $name });
 };
 
-post '/update' => [qw/set_title/] => sub {
-       
-}
 
-post '/delete' => [qw/set_title/] => sub {
 
-}
+post '/update/${id:[0-9]+}' => [qw/set_title/] => sub {
+    my ( $self, $c ) = @_;
+    my $id = $c->args->{id};
+    my $result = $c->req->validator([
+        'name' => {
+            rule => [['NOT_NULL', 'Input some message.']]
+        }
+    ]);
+    if( $result->has_error ){
+        return $c->render('form.tx', 
+            {class_post => "active", info => $result->errors->{name}});
+    }
+    my $teng = teng();
+    my $name = $result->valid->get('name');
+    my $comment = $result->valid->get('comment');
+    my $row = $teng->search('todos', {id => $id});
+    $row->update('todos' => {
+        name => $name,
+        comment => $comment
+    });
+    $c->render('index.tx', {class_home => "active", info => "You have updated: " . $name });
+           
+};
+
+get '/test' => sub{
+    my ( $self, $c )  = @_;
+    my $param = $c->req->query_parameters_raw();
+    my @k = $c->req->query_parameters_raw->mixed->{id};
+    $c->render('index.tx', {class_home => "active", test=>@k,info => "GET: " . "@k"});
+};
+
+
+post '/delete/${id:[0-9]+}' => [qw/set_title/] => sub {
+    my ( $self, $c ) = @_;
+    my $id = $c->args->{id};
+    my $teng = teng();
+    $teng->delete('todos', +{id => $id});
+    $c->redirect($c->req->uri_for('/'));
+};
 
 
 post '/login' => [qw/set_title/] => sub {
 
-}
+};
 
 
 get '/json' => sub {
