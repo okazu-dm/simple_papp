@@ -72,17 +72,11 @@ post '/update/${id:[0-9]+}' => [qw/set_title/] => sub {
     my $row = $teng->search('todos', {id => $id});
     $row->update('todos' => {
         name => $name,
-        comment => $comment
+        comment => $comment,
+        updated_at => time;
     });
     $c->render('index.tx', {class_home => "active", info => "You have updated: " . $name });
            
-};
-
-get '/test' => sub{
-    my ( $self, $c )  = @_;
-    my $param = $c->req->query_parameters_raw();
-    my @k = $c->req->query_parameters_raw->mixed->{id};
-    $c->render('index.tx', {class_home => "active", test=>@k,info => "GET: " . "@k"});
 };
 
 
@@ -95,9 +89,6 @@ post '/delete/${id:[0-9]+}' => [qw/set_title/] => sub {
 };
 
 
-post '/login' => [qw/set_title/] => sub {
-
-};
 
 
 get '/json' => sub {
