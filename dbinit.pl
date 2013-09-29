@@ -3,12 +3,15 @@ use db;
 
 sub init{
 	my $teng = shift;
-	print "Create TABLE post\n";
+	print "Create TABLE todos\n";
 	$teng->do(q{
-		CREATE TABLE post (
+		CREATE TABLE todos (
 			id INT UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-			body TEXT NOT NULL,
-			created TIMESTAMP default current_timestamp
+			name TEXT NOT NULL,
+			comment TEXT default NULL,
+			created_at TIMESTAMP default current_timestamp,
+			updated_at TIMESTAMP,
+			parent_id INT default NULL
 		)
 	});
 }
