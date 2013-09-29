@@ -21,8 +21,7 @@ filter 'set_title' => sub {
 
 get '/' => [qw/set_title/] => sub {
     my ( $self, $c )  = @_;
-    my $teng = teng();
-    my $itr = $teng->search('todos');
+    my $itr = $self->teng->search('todos');
     $c->render('index.tx', {class_home => "active", itr => $itr});
 };
 
@@ -31,6 +30,12 @@ get '/form' => [qw/set_title/] => sub {
     $c->render('form.tx', {class_post => "active"});
 };
 
+get '/edit/${id:[0-9]+}' => [qw/set_title/] => sub {
+    my ( $self, $c )  = @_;
+    $c->render('form.tx', {class_post => "active"});
+};
+
+
 post '/create' => [qw/set_title/] => sub {
     my ( $self, $c )  = @_;
 	my $result = $c->req->validator([
@@ -38,23 +43,24 @@ post '/create' => [qw/set_title/] => sub {
 			rule => [['NOT_NULL', 'Input some message.']]
 		}
 	]);
+    my $itr = $self->teng->search('todos');
 	if( $result->has_error ){
-		return $c->render('form.tx', 
-			{class_post => "active", info => $result->errors->{name}});
+		return $c->render('index.tx', 
+			{class_post => "active", info => $result->errors->{name}, itr => $itr});
 	}
-	my $teng = teng();
     my $name = $result->valid->get('name');
 	my $comment = $result->valid->get('comment');
-	my $row = $teng->insert('todos' => {
+	my $row = $self->teng->insert('todos' => {
 		name => $name,
         comment => $comment
 	});
-    $c->render('index.tx', {class_home => "active", info => "You have posted: " . $name });
+    $itr = $self->teng->search('todos');
+    $c->render('index.tx', {class_home => "active", info => "You have posted: " . $name , itr => $itr });
 };
 
 
 
-post '/update/${id:[0-9]+}' => [qw/set_title/] => sub {
+post '/update/{id:[0-9]+}' => [qw/set_title/] => sub {
     my ( $self, $c ) = @_;
     my $id = $c->args->{id};
     my $result = $c->req->validator([
@@ -66,26 +72,27 @@ post '/update/${id:[0-9]+}' => [qw/set_title/] => sub {
         return $c->render('form.tx', 
             {class_post => "active", info => $result->errors->{name}});
     }
-    my $teng = teng();
     my $name = $result->valid->get('name');
     my $comment = $result->valid->get('comment');
-    my $row = $teng->search('todos', {id => $id});
+    my $row = $self->teng->search('todos', {id => $id});
     $row->update('todos' => {
         name => $name,
         comment => $comment,
-        updated_at => time;
+        updated_at => time
     });
     $c->render('index.tx', {class_home => "active", info => "You have updated: " . $name });
            
 };
 
 
-post '/delete/${id:[0-9]+}' => [qw/set_title/] => sub {
+get '/delete/{id:[0-9]+}' => [qw/set_title/] => sub {
     my ( $self, $c ) = @_;
     my $id = $c->args->{id};
-    my $teng = teng();
-    $teng->delete('todos', +{id => $id});
-    $c->redirect($c->req->uri_for('/'));
+    my @rows = $self->teng->search('todos', {id => $id});
+    my $name = $rows[0]->get_column("name");
+    $self->teng->delete('todos', {id => $id});
+    my $itr = $self->teng->search('todos', {id => $id});
+    $c->render('index.tx', {class_home => "active", info => "You have deleted: " . $name , itr => $itr });
 };
 
 
