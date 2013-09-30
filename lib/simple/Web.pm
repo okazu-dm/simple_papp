@@ -50,9 +50,11 @@ post '/create' => [qw/set_title/] => sub {
 	}
     my $name = $result->valid->get('name');
 	my $comment = $result->valid->get('comment');
+    my $deadline = $result->valid->get('deadline');
 	my $row = $self->teng->insert('todos' => {
 		name => $name,
-        comment => $comment
+        comment => $comment,
+        deadline => $deadline
 	});
     $itr = $self->teng->search('todos');
     $c->render('index.tx', {class_home => "active", info => "You have posted: " . $name , itr => $itr });
@@ -60,27 +62,30 @@ post '/create' => [qw/set_title/] => sub {
 
 
 
-post '/update/{id:[0-9]+}' => [qw/set_title/] => sub {
+post '/update' => [qw/set_title/] => sub {
     my ( $self, $c ) = @_;
-    my $id = $c->args->{id};
     my $result = $c->req->validator([
         'name' => {
             rule => [['NOT_NULL', 'Input some message.']]
-        }
+        },
+        'id' => {rule => [['NOT_NULL', 'Error.']]},
     ]);
+    my $itr = $self->teng->search('todos');
     if( $result->has_error ){
-        return $c->render('form.tx', 
-            {class_post => "active", info => $result->errors->{name}});
+        return $c->render('index.tx', 
+            {class_home => "active", itr=>$itr, info => $result->errors->{id}});
     }
+    my $id = $result->valid->get('id');
     my $name = $result->valid->get('name');
     my $comment = $result->valid->get('comment');
-    my $row = $self->teng->search('todos', {id => $id});
-    $row->update('todos' => {
+    my $row = $self->teng->single('todos', {id => $id});
+    $row->update({
         name => $name,
         comment => $comment,
         updated_at => time
     });
-    $c->render('index.tx', {class_home => "active", info => "You have updated: " . $name });
+    $itr = $self->teng->search('todos');
+    $c->render('index.tx', {class_home => "active", info => "You have updated: " . $name, itr => $itr  });
            
 };
 

@@ -31,15 +31,56 @@
 	</form>
 </div>
 	
-	
+	<table class="table" style="margin: 5px">
+		<tr>
+			<th>Created</th>
+			<th>Name</th>
+			<th>Deadline</th>
+			<th></th>
+		</tr>	
 	: while $itr.next -> $row{
+			<tr>
+			<td><p><: $row.created_at :></td>
+			<td> <: $row.name :> </td>
+			<td><: if $row.deadline == "0000-00-00 00:00:00" {:>
+					No Deadline
+				<:}else {$row.deadline} :> </td>
+		    <td>
+		    	<span class="btn updateTrigger">Edit</span>
+		        <a href="/delete/<: $row.id :>" class="btn">Delete</a>
+		        </p>
+    		<div id="updateForm" class="form" style="display:none" >
+    		<form action="update" method="post">
+    			<input name="id" type="hidden" value="<: $row.id :>">
 
-		<form action="<: $row.id :>" method="post">
-			<p><: $row.created_at :> <: $row.name :> 
-	        <input type="submit" value="Edit/Delete">
-	        <a href="/delete/<: $row.id :>" class="btn"></a>
-	        </p>
-	    </form>
+				<div class="control-group">
+						<label for="nameUp" class="control-label">TODO's Title<strong>(Required)</strong></label>
+					<div class="controls">
+						<input type="text" id="nameUp<: $row.id :>" value="<: $row.name :>" name="name">
+					</div>
+				</div>
+
+				<div class="control-group">
+						<label for="commentUp" class="control-label">Comment<strong>(Optional)</strong></label>
+					<div class="controls">
+						<input type="textbox" row=5 id="commentUp<: $row.id :>" name="comment" value="<: $row.comment :>" >
+					</div>
+				</div>
+
+
+
+					<label for="deadlineUp" class="control-label">Deadline<strong>(Optional)</strong></label>
+				<div class="controls">
+					<input type="date" name="deadline" id="deadlineUp<: $row.id :>" value="<: $row.deadline :>" >
+				</div>
+
+				<button type="submit" class="btn">Submit</button>
+
+			</form>
+			</div>
+		    </td>
+		    </tr>
 	: }
+    </table>
 
 :}
