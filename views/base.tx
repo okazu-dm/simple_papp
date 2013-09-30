@@ -27,7 +27,6 @@ body {
 <div class="nav-collapse">
 <ul class="nav">
 <li class="<: $class_home :>"><a href="<: $c.req.uri_for('/') :>">Home</a></li>
-<li class="<: $class_post :>"><a href="form">Post</a></li>
 </ul>
 </div> <!--/.nav-collapse -->
 </div>
